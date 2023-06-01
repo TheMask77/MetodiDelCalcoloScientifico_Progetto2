@@ -1,17 +1,4 @@
-
-import org.apache.commons.imaging.formats.tiff.datareaders.DataReaderTiled;
-import org.apache.commons.imaging.formats.tiff.datareaders.ImageDataReader;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
-import org.apache.commons.math3.transform.*;
-import org.jtransforms.dct.DoubleDCT_1D;
-import org.jtransforms.dct.DoubleDCT_2D;
 
 public class Main {
 
@@ -33,7 +20,10 @@ public class Main {
             }
         }
 
- */
+
+ */     //Myframe myframe = new Myframe();
+        MainForm mainForm = new MainForm();
+        //mainForm.Init();
 
         double[] inputData = {231, 32, 233, 161, 24, 71, 140, 245};
         double[] transformedData = new double[inputData.length];
