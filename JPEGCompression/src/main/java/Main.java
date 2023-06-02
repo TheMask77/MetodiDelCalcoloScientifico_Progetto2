@@ -33,19 +33,18 @@ public class Main {
             }
         }
 
- */
+
 
         double[] inputData = {231, 32, 233, 161, 24, 71, 140, 245};
         double[] transformedData = new double[inputData.length];
 
         transformedData = DCT.applyDCT(inputData);
-
-        for (int i = 0; i < transformedData.length; i++) {
-            System.out.println(transformedData[i]);
-        }
+        System.out.println();
+        System.out.println("Trans data");
 
 
-        /*
+*/
+
         String rawData = (String) ("231 32 233 161 24 71 140 245\n" +
                 "247 40 248 245 124 204 36 107\n" +
                 "234 202 245 167 9 217 239 173\n" +
@@ -64,16 +63,16 @@ public class Main {
                 inputData2[i][ii] = Double.parseDouble(currentRow[ii]);
         }
 
-        double[][] transformedData = inputData2.clone();
-        DoubleDCT_2D transformer = new DoubleDCT_2D(inputData2.length, inputData2[0].length);
-        transformer.forward(transformedData, true);
-        for (int i = 0; i < transformedData.length; i++){
-            for (int j = 0; j < 8; j++)
-                System.out.print(transformedData[i][j] + " ");
-            System.out.println();
-        }
 
-         */
+        double[][] transformedData = inputData2.clone();
+        //DoubleDCT_2D transformer = new DoubleDCT_2D(inputData2.length, inputData2[0].length);
+        //transformer.forward(transformedData, true);
+
+        transformedData = DCT.applyDCT2(inputData2);
+        System.out.println();
+
+
+
 
     }
 }
