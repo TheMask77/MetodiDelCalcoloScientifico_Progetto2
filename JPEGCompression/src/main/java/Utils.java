@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class Utils {
 
-    public static double[][] loadMatrixFromFile(String filePath, double[][] recipient) {
+    public static double[][] loadMatrixFromFile(String filePath) {
         File inputFile = new File(filePath);
         Scanner inputFileReader = null;
         try {
@@ -38,7 +38,6 @@ public class Utils {
         inputFileReader.close();
         return matrix;
     }
-
 
 }
 

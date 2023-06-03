@@ -17,7 +17,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        Utils.loadMatrixFromFile("src/main/resources/Square arrays/int400x400.csv", null);
+
 
 /*
         File image = new File("src/main/resources/images/bridge.bmp");
