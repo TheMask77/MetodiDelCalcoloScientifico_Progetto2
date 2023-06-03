@@ -16,6 +16,9 @@ import org.jtransforms.dct.DoubleDCT_2D;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+
+        Utils.loadMatrixFromFile("src/main/resources/Square arrays/int400x400.csv", null);
+
 /*
         File image = new File("src/main/resources/images/bridge.bmp");
         Scanner reader = new Scanner(image);
@@ -44,7 +47,7 @@ public class Main {
 
 
 */
-
+/*
         String rawData = (String) ("231 32 233 161 24 71 140 245\n" +
                 "247 40 248 245 124 204 36 107\n" +
                 "234 202 245 167 9 217 239 173\n" +
@@ -70,6 +73,8 @@ public class Main {
 
         transformedData = DCT.applyDCT2(inputData2);
         System.out.println();
+
+ */
 
 
 
