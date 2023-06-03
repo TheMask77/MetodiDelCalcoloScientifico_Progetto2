@@ -13,11 +13,18 @@ import org.apache.commons.math3.transform.*;
 import org.jtransforms.dct.DoubleDCT_1D;
 import org.jtransforms.dct.DoubleDCT_2D;
 
+
 public class Main {
 
     public static void main(String[] args) throws IOException {
 
+        String[] fileNames = {"200", "400", "800", "1600"};
+        double[][] inputMatrix;
 
+        for (int i = 0; i < fileNames.length; i++) {
+            inputMatrix = Utils.loadMatrixFromFile("src/main/resources/Square arrays/int" + fileNames[i] + "x" + fileNames[i] + ".csv");
+            ExecutionTimeExperiments.experiments(inputMatrix);
+        }
 
 /*
         File image = new File("src/main/resources/images/bridge.bmp");
