@@ -55,6 +55,16 @@ public class MainForm extends JFrame{
         });
 
         Init(this);
+        btnPULISCI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pnlIMAGE1.repaint();
+                pnlIMAGE2.repaint();
+                txtFILE.setText("");
+                txtPARAD.setText("");
+                txtPARAF.setText("");
+            }
+        });
     }
 
     private void Init(MainForm mainForm){
@@ -107,6 +117,10 @@ public class MainForm extends JFrame{
         int x;
         int y;
         double scaleFactor;
+
+
+
+        pnlIMAGE1.getGraphics().clearRect(0, 0, pnlIMAGE1.getWidth(), pnlIMAGE1.getHeight());
 
         //JPANEL dimension set
         PANEL1_HEIGHT = pnlIMAGE1.getHeight();
