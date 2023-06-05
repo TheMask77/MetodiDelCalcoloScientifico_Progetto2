@@ -63,13 +63,14 @@ public class Utils {
 
     public static ArrayList<double[][]> getBlocksFromGrayscale(double[][] inputGrayscale, int blockDimension) {
         ArrayList<double[][]> blocks = new ArrayList<>();
-        double[][] singleBlock= new double[blockDimension][blockDimension];
+        double[][] singleBlock;
         int adjustedXDim = inputGrayscale.length - (inputGrayscale.length % blockDimension);
         int adjustedYDim = inputGrayscale[0].length - (inputGrayscale[0].length % blockDimension);
         int newBlockPosX = 0;
         int newBlockPosY = 0;
 
         while (newBlockPosX < adjustedXDim && newBlockPosY < adjustedYDim) {
+            singleBlock= new double[blockDimension][blockDimension];
             Utils.copyBlock(singleBlock, inputGrayscale, newBlockPosX, newBlockPosY, blockDimension);
             blocks.add(singleBlock);
 
