@@ -1,22 +1,34 @@
-
-import org.apache.commons.imaging.formats.tiff.datareaders.DataReaderTiled;
-import org.apache.commons.imaging.formats.tiff.datareaders.ImageDataReader;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
-import org.apache.commons.math3.transform.*;
-import org.jtransforms.dct.DoubleDCT_1D;
-import org.jtransforms.dct.DoubleDCT_2D;
 
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
+
+        int blockWidth = 0;
+        int frequenciesToDrop = 0;
+        Scanner inputReader = new Scanner(System.in);
+/*
+        do {
+            System.out.print("Insert a value for F (blocks dimension) ==> ");
+            blockWidth = inputReader.nextInt();
+        } while (blockWidth < 1);
+
+        do {
+            System.out.print("Insert a value for d (frequencies to be dropped) between 0 and 2F - 2 ==> ");
+            frequenciesToDrop = inputReader.nextInt();
+        } while (!(frequenciesToDrop >= 0 && frequenciesToDrop <= (2*blockWidth - 2)));
+
+        System.out.println("F = " + blockWidth + " and d = " + frequenciesToDrop);
+
+ */
+
+        double[][] inputImage = Utils.getGrayLevelsMatrixFromFile("src/main/resources/images/20x20.bmp");
+        ArrayList<double[][]> blocks = Utils.getBlocksFromGrayscale(inputImage, 8);
+        System.out.println();
+
 
         /*
         String[] fileNames = {"200", "400", "800", "1600"};
@@ -67,7 +79,7 @@ public class Main {
 
  */
 
-        double[][] grayLvs = Utils.getGrayLevelsMatrixFromFile("src/main/resources/images/bridge.bmp");
+
 
     }
 }

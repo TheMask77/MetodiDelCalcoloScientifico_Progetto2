@@ -60,5 +60,36 @@ public class Utils {
 
         return grayLevels;
     }
+
+    public static ArrayList<double[][]> getBlocksFromGrayscale(double[][] inputGrayscale, int blockDimension) {
+        ArrayList<double[][]> blocks = new ArrayList<>();
+        double[][] singleBlock= new double[blockDimension][blockDimension];
+        int adjustedXDim = inputGrayscale.length - (inputGrayscale.length % blockDimension);
+        int adjustedYDim = inputGrayscale[0].length - (inputGrayscale[0].length % blockDimension);
+        int newBlockPosX = 0;
+        int newBlockPosY = 0;
+
+        while (newBlockPosX < adjustedXDim && newBlockPosY < adjustedYDim) {
+            Utils.copyBlock(singleBlock, inputGrayscale, newBlockPosX, newBlockPosY, blockDimension);
+            blocks.add(singleBlock);
+
+            newBlockPosY += blockDimension;
+
+            if(newBlockPosY == adjustedXDim) {
+                newBlockPosY = 0;
+                newBlockPosX += blockDimension;
+            }
+
+        }
+        return blocks;
+    }
+
+    private static void copyBlock(double[][] recipientBlock, double[][] inputMatrix, int startingPosX, int startingPosY, int blockDimension) {
+        for (int i = 0; i < blockDimension; i++ ) {
+            for (int j = 0; j < blockDimension; j++) {
+                recipientBlock[i][j] = inputMatrix[startingPosX + i][startingPosY + j];
+            }
+        }
+    }
 }
 
