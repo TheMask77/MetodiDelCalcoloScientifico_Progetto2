@@ -118,16 +118,24 @@ public class Utils {
     }
 
     public static void getImageMatrixFromBlocks(double[][] imageMatrix, int blockDimension, ArrayList<double[][]> blocksArray, int adjustedXDim, int adjustedYDim){
-        ArrayList<double[][]> blocks = new ArrayList<>();
         int dimXMultiplier = 0;
-        int dimYmultiplier = 0;
+        int dimYMultiplier = 0;
         int blocksAnalyzed = 0;
         int tempX = 0;
         int tempY = 0;
+        int blockNumber;
 
+        for (int i = 0; i < adjustedXDim; i++)
+            for (int j = 0; j < adjustedYDim; j++) {
+                blockNumber = ((adjustedYDim / blockDimension) * Math.floorDiv(i, blockDimension)) + Math.floorDiv(j, blockDimension);
+                imageMatrix[i][j] = blocksArray.get(blockNumber)[j % blockDimension][i % blockDimension];
+            }
+
+
+        /*
         for (double[][] block : blocksArray){
             tempX = dimXMultiplier * blockDimension;
-            tempY = dimYmultiplier * blockDimension;
+            tempY = dimYMultiplier * blockDimension;
             if (tempX != 0) tempX--;
             if(tempY != 0) tempY--;
             for(int i = 0; i < blockDimension; i++){
@@ -142,9 +150,10 @@ public class Utils {
             }else{
                 blocksAnalyzed = 0;
                 dimXMultiplier = 0;
-                dimYmultiplier++;
+                dimYMultiplier++;
             }
         }
+        */
     }
 
     /*public static void imageLoading(String imagePath){

@@ -84,9 +84,9 @@ public class MainForm extends JFrame{
         double[][] adjustedImageMatrix = new double[adjustedImageWidth][adjustedImageHeight];
         Utils.getImageMatrixFromBlocks(adjustedImageMatrix, F, imageArraylist, adjustedImageWidth, adjustedImageHeight);
         System.out.println("");
-            BufferedImage image = new BufferedImage(adjustedImageWidth, adjustedImageHeight, BufferedImage.TYPE_INT_RGB);
-            for(int i=0; i<adjustedImageMatrix.length; i++) {
-                for(int j=0; j< adjustedImageMatrix[i].length ; j++) {
+            BufferedImage image = new BufferedImage(adjustedImageMatrix.length, adjustedImageMatrix[0].length, BufferedImage.TYPE_INT_RGB);
+            for(int i = 0; i < adjustedImageMatrix.length; i++) {
+                for(int j = 0; j < adjustedImageMatrix[i].length; j++) {
                     int a = (int) adjustedImageMatrix[i][j];
                     Color newColor = new Color(a,a,a);
                     image.setRGB(j,i,newColor.getRGB());
@@ -94,6 +94,7 @@ public class MainForm extends JFrame{
             }
             File output = new File("GrayScale.jpg");
             pnlIMAGE2.getGraphics().drawImage(image, 0, 0, null);
+
             //ImageIO.write(image, "jpg", output);
 
 
