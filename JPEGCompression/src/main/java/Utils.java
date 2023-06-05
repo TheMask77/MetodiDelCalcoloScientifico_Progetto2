@@ -9,7 +9,19 @@ import java.util.Arrays;
 
 public class Utils {
 
+    private static int imageWidth;
+    private static int imageHeight;
+
+    public static int getImageWidth() {
+        return imageWidth;
+    }
+
+    public static int getImageHeight() {
+        return imageHeight;
+    }
+
     public static double[][] loadMatrixFromFile(String filePath) {
+        boolean isLoop = false;
         File inputFile = new File(filePath);
         Scanner inputFileReader = null;
         try {
@@ -36,16 +48,28 @@ public class Utils {
             matrix[rowIndex] = row;
 
             rowIndex++;
+            isLoop = true;
         }
 
         inputFileReader.close();
         return matrix;
     }
 
-    public static double[][] getGrayLevelsMatrixFromFile(String filePath) throws IOException {
+    private static void setImageDimensions(BufferedImage image) {
+        imageWidth = image.getWidth();
+        imageHeight = image.getHeight();
+    }
+
+    public static double[][] getGrayLevelsMatrixFromFile(String filePath) {
 
         File image = new File(filePath);
-        BufferedImage img = ImageIO.read(image);
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(image);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        setImageDimensions(img);
 
         int dimX = img.getWidth();
         int dimY = img.getHeight();
@@ -74,11 +98,11 @@ public class Utils {
             Utils.copyBlock(singleBlock, inputGrayscale, newBlockPosX, newBlockPosY, blockDimension);
             blocks.add(singleBlock);
 
-            newBlockPosY += blockDimension;
+            newBlockPosX += blockDimension;
 
-            if(newBlockPosY == adjustedXDim) {
-                newBlockPosY = 0;
-                newBlockPosX += blockDimension;
+            if(newBlockPosX == adjustedXDim) {
+                newBlockPosX = 0;
+                newBlockPosY += blockDimension;
             }
 
         }
@@ -92,5 +116,49 @@ public class Utils {
             }
         }
     }
+
+    public static void getImageMatrixFromBlocks(double[][] imageMatrix, int blockDimension, ArrayList<double[][]> blocksArray, int adjustedXDim, int adjustedYDim){
+        ArrayList<double[][]> blocks = new ArrayList<>();
+        int dimXMultiplier = 0;
+        int dimYmultiplier = 0;
+        int blocksAnalyzed = 0;
+        int tempX = 0;
+        int tempY = 0;
+
+        for (double[][] block : blocksArray){
+            tempX = dimXMultiplier * blockDimension;
+            tempY = dimYmultiplier * blockDimension;
+            if (tempX != 0) tempX--;
+            if(tempY != 0) tempY--;
+            for(int i = 0; i < blockDimension; i++){
+                for(int j = 0; j < blockDimension; j++){
+
+                    imageMatrix[i + (tempX)][j + (tempY)] = block[i][j];
+                }
+            }
+            blocksAnalyzed++;
+            if (adjustedXDim - ((blocksAnalyzed * blockDimension)) != 0){
+                dimXMultiplier++;
+            }else{
+                blocksAnalyzed = 0;
+                dimXMultiplier = 0;
+                dimYmultiplier++;
+            }
+        }
+    }
+
+    /*public static void imageLoading(String imagePath){
+        BufferedImage img=new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        for(int r=0; r<height; r++)
+            for(int c=0; c<width; c++)
+            {
+                int index=r*width+c;
+                int red=colors[index] & 0xFF;
+                int green=colors[index+1] & 0xFF;
+                int blue=colors[index+2] & 0xFF;
+                int rgb = (red << 16) | (green << 8) | blue;
+                img.setRGB(c, r, rgb);
+            }
+    }*/
 }
 

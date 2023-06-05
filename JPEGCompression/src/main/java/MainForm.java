@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainForm extends JFrame{
 
@@ -38,23 +39,22 @@ public class MainForm extends JFrame{
         btnFILE.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ApriFile();
-                ImpostaImmagine();
+                apriFile();
+                impostaImmagine();
             }
         });
         btnSTART.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(ControlloCampi()){
+                if(controlloCampi()){
                     PANEL2_HEIGHT = pnlIMAGE2.getHeight();
                     PANEL2_WIDTH = pnlIMAGE2.getWidth();
-                    //TODO: se il controllo campi va a buon fine
-                    //TODO: richiamo l'algoritmo e eseguo la dct
+                    elaborazioneImmagine();
                 }
             }
         });
 
-        Init(this);
+        init(this);
         btnPULISCI.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -67,7 +67,39 @@ public class MainForm extends JFrame{
         });
     }
 
-    private void Init(MainForm mainForm){
+    private void elaborazioneImmagine() {
+
+        int F = Integer.parseInt(txtPARAF.getText());
+        int d = Integer.parseInt(txtPARAD.getText());
+
+        double[][] imageArray = Utils.getGrayLevelsMatrixFromFile(imagePath);
+        ArrayList<double[][]> imageArraylist = Utils.getBlocksFromGrayscale(imageArray, F);
+        imageArraylist = Compression.compress(imageArraylist, F, d);
+
+        //dimensions adjustment
+        int adjustedImageWidth = Utils.getImageWidth();
+        int adjustedImageHeight = Utils.getImageHeight();
+        adjustedImageWidth = adjustedImageWidth - (adjustedImageWidth % F);
+        adjustedImageHeight = adjustedImageHeight - (adjustedImageHeight % F);
+        double[][] adjustedImageMatrix = new double[adjustedImageWidth][adjustedImageHeight];
+        Utils.getImageMatrixFromBlocks(adjustedImageMatrix, F, imageArraylist, adjustedImageWidth, adjustedImageHeight);
+        System.out.println("");
+            BufferedImage image = new BufferedImage(adjustedImageWidth, adjustedImageHeight, BufferedImage.TYPE_INT_RGB);
+            for(int i=0; i<adjustedImageMatrix.length; i++) {
+                for(int j=0; j< adjustedImageMatrix[i].length ; j++) {
+                    int a = (int) adjustedImageMatrix[i][j];
+                    Color newColor = new Color(a,a,a);
+                    image.setRGB(j,i,newColor.getRGB());
+                }
+            }
+            File output = new File("GrayScale.jpg");
+            pnlIMAGE2.getGraphics().drawImage(image, 0, 0, null);
+            //ImageIO.write(image, "jpg", output);
+
+
+    }
+
+    private void init(MainForm mainForm){
 
         //Variable init
         latestPath = "";
@@ -86,7 +118,7 @@ public class MainForm extends JFrame{
         mainForm.setVisible(true);
     }
 
-    private void ApriFile() {
+    private void apriFile() {
         JFileChooser chooser;
         if (latestPath.isEmpty()){
             chooser = new JFileChooser(System.getProperty("user.home") + "\\desktop");
@@ -108,7 +140,7 @@ public class MainForm extends JFrame{
         }
     }
 
-    private void ImpostaImmagine(){
+    private void impostaImmagine(){
         BufferedImage image;
         File imageFile;
         Image scaledImage;
@@ -161,7 +193,7 @@ public class MainForm extends JFrame{
         }
     }
 
-    private boolean ControlloCampi(){
+    private boolean controlloCampi(){
 
         if(!txtFILE.getText().trim().isEmpty()){
             File file = new File(txtFILE.getText());

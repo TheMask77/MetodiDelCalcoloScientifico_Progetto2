@@ -30,6 +30,7 @@ public class Main {
 
         double[][] inputImage = Utils.getGrayLevelsMatrixFromFile("src/main/resources/images/20x20.bmp");
         ArrayList<double[][]> blocks = Utils.getBlocksFromGrayscale(inputImage, 8);
+        Compression.compress(blocks, 8, 14);
         System.out.println();
 
 
