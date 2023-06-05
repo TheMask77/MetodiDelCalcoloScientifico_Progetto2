@@ -3,27 +3,9 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-/*
-        File image = new File("src/main/resources/images/bridge.bmp");
-        Scanner reader = new Scanner(image);
-        BufferedImage img = ImageIO.read(image);
 
-        int dimX = img.getWidth();
-        int dimY = img.getHeight();
-// you should stop here
-        byte[][] grayLevels = new byte[dimX][dimY];
-
-        for(int x=0; x<dimX; x++){
-            for(int y=0; y<dimY; y++){
-                int color = -img.getRGB(x,y);
-                grayLevels[x][y] = (byte)(color);
-            }
-        }
-
-
- */     //Myframe myframe = new Myframe();
+        //GUI Startup
         MainForm mainForm = new MainForm();
-        //mainForm.Init();
 
         double[] inputData = {231, 32, 233, 161, 24, 71, 140, 245};
         double[] transformedData = new double[inputData.length];
