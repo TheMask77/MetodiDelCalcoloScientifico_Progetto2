@@ -1,4 +1,7 @@
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
 
 public class Main {
 
@@ -7,17 +10,50 @@ public class Main {
         //GUI Startup
         MainForm mainForm = new MainForm();
 
+        int blockWidth = 0;
+        int frequenciesToDrop = 0;
+        Scanner inputReader = new Scanner(System.in);
+/*
+        do {
+            System.out.print("Insert a value for F (blocks dimension) ==> ");
+            blockWidth = inputReader.nextInt();
+        } while (blockWidth < 1);
+
+        do {
+            System.out.print("Insert a value for d (frequencies to be dropped) between 0 and 2F - 2 ==> ");
+            frequenciesToDrop = inputReader.nextInt();
+        } while (!(frequenciesToDrop >= 0 && frequenciesToDrop <= (2*blockWidth - 2)));
+
+        System.out.println("F = " + blockWidth + " and d = " + frequenciesToDrop);
+
+ */
+
+        double[][] inputImage = Utils.getGrayLevelsMatrixFromFile("src/main/resources/images/20x20.bmp");
+        ArrayList<double[][]> blocks = Utils.getBlocksFromGrayscale(inputImage, 8);
+        System.out.println();
+
+
+        /*
+        String[] fileNames = {"200", "400", "800", "1600"};
+        double[][] inputMatrix;
+
+        for (int i = 0; i < fileNames.length; i++) {
+            inputMatrix = Utils.loadMatrixFromFile("src/main/resources/Square arrays/int" + fileNames[i] + "x" + fileNames[i] + ".csv");
+            ExecutionTimeExperiments.experiments(inputMatrix);
+        }
+         */
+
+/*
         double[] inputData = {231, 32, 233, 161, 24, 71, 140, 245};
         double[] transformedData = new double[inputData.length];
 
         transformedData = DCT.applyDCT(inputData);
-
-        for (int i = 0; i < transformedData.length; i++) {
-            System.out.println(transformedData[i]);
-        }
+        System.out.println();
+        System.out.println("Trans data");
 
 
-        /*
+*/
+/*
         String rawData = (String) ("231 32 233 161 24 71 140 245\n" +
                 "247 40 248 245 124 204 36 107\n" +
                 "234 202 245 167 9 217 239 173\n" +
@@ -36,16 +72,17 @@ public class Main {
                 inputData2[i][ii] = Double.parseDouble(currentRow[ii]);
         }
 
-        double[][] transformedData = inputData2.clone();
-        DoubleDCT_2D transformer = new DoubleDCT_2D(inputData2.length, inputData2[0].length);
-        transformer.forward(transformedData, true);
-        for (int i = 0; i < transformedData.length; i++){
-            for (int j = 0; j < 8; j++)
-                System.out.print(transformedData[i][j] + " ");
-            System.out.println();
-        }
 
-         */
+        double[][] transformedData = inputData2.clone();
+        //DoubleDCT_2D transformer = new DoubleDCT_2D(inputData2.length, inputData2[0].length);
+        //transformer.forward(transformedData, true);
+
+        transformedData = DCT.applyDCT2(inputData2);
+        System.out.println();
+
+ */
+
+
 
     }
 }
