@@ -37,6 +37,22 @@ public class DCT {
         return transformedMatrix;
     }
 
+
+    public static double[] applyInvDCT(double[] inputVector) {
+        int dimension = inputVector.length;
+        double[] invertedVector = new double[dimension];
+        double invertedVectorElement = 0.0;
+
+        for (int j = 0; j < dimension; j++) {
+            for (int k = 0; k < dimension; k++)
+                invertedVectorElement += inputVector[k] * Math.cos(k * Math.PI * ((double) ((2 * j + 1) / ( 2 * dimension))));
+
+            invertedVector[j] = invertedVectorElement;
+        }
+
+        return invertedVector;
+    }
+
     public static double[] getColumn(double[][] inputMatrix, int columnIndex) {
         double[] column = new double[inputMatrix.length];
 
