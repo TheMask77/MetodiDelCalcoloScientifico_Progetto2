@@ -13,9 +13,19 @@ import org.apache.commons.math3.transform.*;
 import org.jtransforms.dct.DoubleDCT_1D;
 import org.jtransforms.dct.DoubleDCT_2D;
 
+
 public class Main {
 
     public static void main(String[] args) throws IOException {
+
+        String[] fileNames = {"200", "400", "800", "1600"};
+        double[][] inputMatrix;
+
+        for (int i = 0; i < fileNames.length; i++) {
+            inputMatrix = Utils.loadMatrixFromFile("src/main/resources/Square arrays/int" + fileNames[i] + "x" + fileNames[i] + ".csv");
+            ExecutionTimeExperiments.experiments(inputMatrix);
+        }
+
 /*
         File image = new File("src/main/resources/images/bridge.bmp");
         Scanner reader = new Scanner(image);
@@ -44,7 +54,7 @@ public class Main {
 
 
 */
-
+/*
         String rawData = (String) ("231 32 233 161 24 71 140 245\n" +
                 "247 40 248 245 124 204 36 107\n" +
                 "234 202 245 167 9 217 239 173\n" +
@@ -70,6 +80,8 @@ public class Main {
 
         transformedData = DCT.applyDCT2(inputData2);
         System.out.println();
+
+ */
 
 
 
