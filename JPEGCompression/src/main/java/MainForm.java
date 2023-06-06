@@ -41,7 +41,7 @@ public class MainForm extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 apriFile();
-                impostaImmagine();
+                impostaImmagine(pnlIMAGE1, null);
             }
         });
         btnSTART.addActionListener(new ActionListener() {
@@ -50,11 +50,7 @@ public class MainForm extends JFrame{
                 if(controlloCampi()){
                     PANEL2_HEIGHT = pnlIMAGE2.getHeight();
                     PANEL2_WIDTH = pnlIMAGE2.getWidth();
-                    try {
-                        elaborazioneImmagine();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    elaborazioneImmagine();
                 }
             }
         });
@@ -72,7 +68,7 @@ public class MainForm extends JFrame{
         });
     }
 
-    private void elaborazioneImmagine() throws IOException {
+    private void elaborazioneImmagine() {
 
         int F = Integer.parseInt(txtPARAF.getText());
         int d = Integer.parseInt(txtPARAD.getText());
@@ -99,13 +95,27 @@ public class MainForm extends JFrame{
             }
         }
 
-        //File outputfile = new File("output.jpg");
+        String newImagePath = "src/main/resources/ElaboratedImages/";
+        newImagePath += imagePath.split("\\\\")[imagePath.split("\\\\").length - 1].split("\\.")[0] + ".jpeg";
+        File outputfile = new File(newImagePath);
+        try {
+            if(!outputfile.exists()) {
+                outputfile.createNewFile();
+            }
+            ImageIO.write(image, "jpeg", outputfile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        impostaImmagine(pnlIMAGE2, image);
+
+        /*//File outputfile = new File("output.jpg");
         //ImageIO.write(image, "jpg", outputfile);
 
             File output = new File("GrayScale.jpg");
             pnlIMAGE2.getGraphics().drawImage(image, 0, 0, null);
 
-            //ImageIO.write(image, "jpg", output);
+            //ImageIO.write(image, "jpg", output);*/
 
 
     }
@@ -151,56 +161,62 @@ public class MainForm extends JFrame{
         }
     }
 
-    private void impostaImmagine(){
+    private void impostaImmagine(JPanel panel, BufferedImage imageOptional){
         BufferedImage image;
         File imageFile;
         Image scaledImage;
-        int width;
-        int height;
+        int imageWidth;
+        int imageHeight;
+        int panelWidth;
+        int panelHeight;
         int x;
         int y;
         double scaleFactor;
 
+        panelWidth = panel.getWidth();
+        panelHeight = panel.getHeight();
 
+        panel.getGraphics().clearRect(0, 0, panelWidth, panelHeight);
 
-        pnlIMAGE1.getGraphics().clearRect(0, 0, pnlIMAGE1.getWidth(), pnlIMAGE1.getHeight());
-
-        //JPANEL dimension set
+        /*//JPANEL dimension set
         PANEL1_HEIGHT = pnlIMAGE1.getHeight();
-        PANEL1_WIDTH = pnlIMAGE1.getWidth();
+        PANEL1_WIDTH = pnlIMAGE1.getWidth();*/
 
-        try {
-            int pnlWidth = pnlIMAGE1.getWidth();
-            int pnlHeight = pnlIMAGE1.getHeight();
-            imageFile = new File(imagePath);
-            image = ImageIO.read(imageFile);
-            width = image.getWidth();
-            height = image.getHeight();
-
-            if(width > 500 || height > 500) {
-                if(width > height){
-                    scaleFactor = (double) height/width;
-                    width = PANEL1_WIDTH;
-                    height = (int) (PANEL1_WIDTH * scaleFactor);
-                    x = 0;
-                    y = (PANEL1_HEIGHT - height)/2;
-                }else{
-                    scaleFactor = (double) width/height;
-                    height = PANEL1_HEIGHT;
-                    width = (int) (PANEL1_HEIGHT * scaleFactor);
-                    x = (PANEL1_WIDTH - width)/2;
-                    y = 0;
-                }
-
-                scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-                pnlIMAGE1.getGraphics().drawImage(scaledImage, x, y, null);
-            }else{
-                x = (PANEL1_WIDTH - width)/2;
-                y = (PANEL1_HEIGHT - height)/2;
-                pnlIMAGE1.getGraphics().drawImage(image, x, y, null);
+        if(imageOptional != null){
+            image = imageOptional;
+        }else{
+            try {
+                imageFile = new File(imagePath);
+                image = ImageIO.read(imageFile);
+            }catch (IOException e){
+                return;
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        }
+
+        imageWidth = image.getWidth();
+        imageHeight = image.getHeight();
+
+        if(imageWidth > panelWidth || imageHeight > panelHeight) {
+            if(imageWidth > imageHeight){
+                scaleFactor = (double) imageHeight/imageWidth;
+                imageWidth = panelWidth;
+                imageHeight = (int) (panelHeight * scaleFactor);
+                x = 0;
+                y = (panelHeight - imageHeight)/2;
+            }else{
+                scaleFactor = (double) imageWidth/imageHeight;
+                imageHeight = panelHeight;
+                imageWidth = (int) (panelHeight * scaleFactor);
+                x = (panelWidth - imageWidth)/2;
+                y = 0;
+            }
+
+            scaledImage = image.getScaledInstance(imageWidth, imageHeight, Image.SCALE_REPLICATE);
+            panel.getGraphics().drawImage(scaledImage, x, y, null);
+        }else{
+            x = (panelWidth - imageWidth)/2;
+            y = (panelHeight - imageHeight)/2;
+            panel.getGraphics().drawImage(image, x, y, null);
         }
     }
 
