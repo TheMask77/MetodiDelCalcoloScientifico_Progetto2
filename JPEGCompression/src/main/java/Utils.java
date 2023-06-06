@@ -1,3 +1,5 @@
+import jdk.jshell.execution.Util;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -90,9 +92,24 @@ public class Utils {
         double[][] singleBlock;
         int adjustedXDim = inputGrayscale.length - (inputGrayscale.length % blockDimension);
         int adjustedYDim = inputGrayscale[0].length - (inputGrayscale[0].length % blockDimension);
+        int blockNumber = 0;
+        int blocksInAColumn = adjustedXDim / blockDimension;
+        int blocksInARow = adjustedYDim / blockDimension;
         int newBlockPosX = 0;
         int newBlockPosY = 0;
 
+        for (int i = 0; i < blocksInARow * blocksInAColumn; i++) {
+            blocks.add(i, new double[blockDimension][blockDimension]);
+        }
+
+        for (int i = 0; i < adjustedXDim; i++) {
+            for (int j = 0; j < adjustedYDim; j++) {
+                blockNumber = blocksInARow * Math.floorDiv(i, blockDimension) + Math.floorDiv(j, blockDimension);
+                blocks.get(blockNumber)[i % blockDimension][j % blockDimension] = inputGrayscale[i][j];
+            }
+        }
+
+        /*
         while (newBlockPosX < adjustedXDim && newBlockPosY < adjustedYDim) {
             singleBlock= new double[blockDimension][blockDimension];
             Utils.copyBlock(singleBlock, inputGrayscale, newBlockPosX, newBlockPosY, blockDimension);
@@ -106,6 +123,8 @@ public class Utils {
             }
 
         }
+        */
+
         return blocks;
     }
 
@@ -123,12 +142,13 @@ public class Utils {
         int blocksAnalyzed = 0;
         int tempX = 0;
         int tempY = 0;
-        int blockNumber;
+        int blockNumber = 0;
+        int blocksInARow = adjustedYDim / blockDimension;
 
         for (int i = 0; i < adjustedXDim; i++)
             for (int j = 0; j < adjustedYDim; j++) {
-                blockNumber = ((adjustedYDim / blockDimension) * Math.floorDiv(i, blockDimension)) + Math.floorDiv(j, blockDimension);
-                imageMatrix[i][j] = blocksArray.get(blockNumber)[j % blockDimension][i % blockDimension];
+                blockNumber = blocksInARow * Math.floorDiv(i, blockDimension) + Math.floorDiv(j, blockDimension);
+                imageMatrix[i][j] = blocksArray.get(blockNumber)[i % blockDimension][j % blockDimension];
             }
 
 

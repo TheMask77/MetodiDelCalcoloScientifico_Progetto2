@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,7 +50,11 @@ public class MainForm extends JFrame{
                 if(controlloCampi()){
                     PANEL2_HEIGHT = pnlIMAGE2.getHeight();
                     PANEL2_WIDTH = pnlIMAGE2.getWidth();
-                    elaborazioneImmagine();
+                    try {
+                        elaborazioneImmagine();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         });
@@ -67,31 +72,36 @@ public class MainForm extends JFrame{
         });
     }
 
-    private void elaborazioneImmagine() {
+    private void elaborazioneImmagine() throws IOException {
 
         int F = Integer.parseInt(txtPARAF.getText());
         int d = Integer.parseInt(txtPARAD.getText());
 
         double[][] imageArray = Utils.getGrayLevelsMatrixFromFile(imagePath);
         ArrayList<double[][]> imageArraylist = Utils.getBlocksFromGrayscale(imageArray, F);
-        imageArraylist = Compression.compress(imageArraylist, F, d);
+        ArrayList<double[][]> compressedBlocks = Compression.compress(imageArraylist, F, d);
 
         //dimensions adjustment
         int adjustedImageWidth = Utils.getImageWidth();
         int adjustedImageHeight = Utils.getImageHeight();
         adjustedImageWidth = adjustedImageWidth - (adjustedImageWidth % F);
         adjustedImageHeight = adjustedImageHeight - (adjustedImageHeight % F);
+
         double[][] adjustedImageMatrix = new double[adjustedImageWidth][adjustedImageHeight];
-        Utils.getImageMatrixFromBlocks(adjustedImageMatrix, F, imageArraylist, adjustedImageWidth, adjustedImageHeight);
-        System.out.println("");
-            BufferedImage image = new BufferedImage(adjustedImageMatrix.length, adjustedImageMatrix[0].length, BufferedImage.TYPE_INT_RGB);
-            for(int i = 0; i < adjustedImageMatrix.length; i++) {
-                for(int j = 0; j < adjustedImageMatrix[i].length; j++) {
-                    int a = (int) adjustedImageMatrix[i][j];
-                    Color newColor = new Color(a,a,a);
-                    image.setRGB(j,i,newColor.getRGB());
-                }
+        Utils.getImageMatrixFromBlocks(adjustedImageMatrix, F, compressedBlocks, adjustedImageWidth, adjustedImageHeight);
+        System.out.println();
+        BufferedImage image = new BufferedImage(adjustedImageWidth, adjustedImageHeight, BufferedImage.TYPE_INT_RGB);
+        for(int i = 0; i < adjustedImageWidth; i++) {
+            for(int j = 0; j < adjustedImageHeight; j++) {
+                int grayLevelInt = (int) adjustedImageMatrix[i][j];
+                Color grayLevel = new Color(grayLevelInt, grayLevelInt, grayLevelInt);
+                image.setRGB(i, j, grayLevel.getRGB());
             }
+        }
+
+        //File outputfile = new File("output.jpg");
+        //ImageIO.write(image, "jpg", outputfile);
+
             File output = new File("GrayScale.jpg");
             pnlIMAGE2.getGraphics().drawImage(image, 0, 0, null);
 
