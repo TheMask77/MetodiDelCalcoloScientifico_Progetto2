@@ -44,18 +44,16 @@ public class Main {
         }
          */
 
-/*
         double[] inputData = {231, 32, 233, 161, 24, 71, 140, 245};
         double[] transformedData = new double[inputData.length];
 
         transformedData = DCT.applyDCT(inputData);
-        System.out.println();
-        System.out.println("Trans data");
+        Driver.printArray(transformedData);
+        //System.out.println();
+        //System.out.println("Trans data");
 
-
-*/
-/*
-        String rawData = (String) ("231 32 233 161 24 71 140 245\n" +
+//DCT2 Homemade
+/*        String rawData = (String) ("231 32 233 161 24 71 140 245\n" +
                 "247 40 248 245 124 204 36 107\n" +
                 "234 202 245 167 9 217 239 173\n" +
                 "193 190 100 167 43 180 8 70\n" +
@@ -79,9 +77,10 @@ public class Main {
         //transformer.forward(transformedData, true);
 
         transformedData = DCT.applyDCT2(inputData2);
-        System.out.println();
+        Driver.print2DArray(transformedData, 8, 8);
+*/
+        //System.out.println();
 
- */
 
 
 

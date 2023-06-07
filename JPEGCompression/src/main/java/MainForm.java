@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ public class MainForm extends JFrame{
     private double d;
     private double dMax;
     private String imagePath;
+    private String newImagePath;
     private String latestPath;
     private JButton btnFILE;
     private JPanel pnlMAIN;
@@ -33,6 +33,7 @@ public class MainForm extends JFrame{
     private JPanel pnlIMAGE1;
     private JPanel pnlIMAGE2;
     private JButton btnPULISCI;
+    private JButton btnAPRI;
     private JLabel labIMAGE;
 
     public MainForm(){
@@ -66,6 +67,17 @@ public class MainForm extends JFrame{
                 txtPARAF.setText("");
             }
         });
+        btnAPRI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    Desktop.getDesktop().open(new File(newImagePath));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
 
     private void elaborazioneImmagine() {
@@ -95,7 +107,7 @@ public class MainForm extends JFrame{
             }
         }
 
-        String newImagePath = "src/main/resources/ElaboratedImages/";
+        newImagePath = "src/main/resources/ElaboratedImages/";
         newImagePath += imagePath.split("\\\\")[imagePath.split("\\\\").length - 1].split("\\.")[0] + ".jpeg";
         File outputfile = new File(newImagePath);
         try {

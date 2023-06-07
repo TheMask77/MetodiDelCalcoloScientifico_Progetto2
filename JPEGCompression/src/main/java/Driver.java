@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Driver {
@@ -75,11 +76,17 @@ public class Driver {
     public static void print2DArray(double[][] array, int dimX, int dimY) {
         for (int i = 0; i < dimX; i++) {
             for (int j = 0; j < dimY; j++) {
-                System.out.print(array[i][j] + ", ");
+                System.out.print(formatter(array[i][j]) + ",\t ");
             }
             System.out.println();
         }
         System.out.println();
+    }
+
+    public static void printArray(double[] array){
+        for(int i = 0; i < array.length; i++){
+            System.out.print(formatter(array[i]) + ",\t ");
+        }
     }
 
     public static void print2DArrayToBlocks(double[][] array, int dimX, int dimY, int blockDim) {
@@ -94,6 +101,15 @@ public class Driver {
             System.out.println();
         }
         System.out.println();
+    }
+
+    private static String formatter(double number){
+        DecimalFormat formatter = new DecimalFormat("0.00E00");
+        String fnumber = formatter.format(number);
+        if (!fnumber.contains("E-")) { //don't blast a negative sign
+            fnumber = fnumber.replace("E", "E+");
+        }
+        return fnumber;
     }
 
 
