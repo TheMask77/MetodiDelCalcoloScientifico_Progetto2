@@ -7,34 +7,20 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
+        boolean isTestModeEnabled = false;
+
         //GUI Startup
         MainForm mainForm = new MainForm();
 
-        int blockWidth = 0;
-        int frequenciesToDrop = 0;
-        Scanner inputReader = new Scanner(System.in);
-/*
-        do {
-            System.out.print("Insert a value for F (blocks dimension) ==> ");
-            blockWidth = inputReader.nextInt();
-        } while (blockWidth < 1);
+        if(isTestModeEnabled){
+            executionTimeTest();
+            DCTReliabilityTest();
+            DCT2ReliabilityTest();
+        }
+    }
 
-        do {
-            System.out.print("Insert a value for d (frequencies to be dropped) between 0 and 2F - 2 ==> ");
-            frequenciesToDrop = inputReader.nextInt();
-        } while (!(frequenciesToDrop >= 0 && frequenciesToDrop <= (2*blockWidth - 2)));
-
-        System.out.println("F = " + blockWidth + " and d = " + frequenciesToDrop);
-
- */
-
-        double[][] inputImage = Utils.getGrayLevelsMatrixFromFile("src/main/resources/images/20x20.bmp");
-        ArrayList<double[][]> blocks = Utils.getBlocksFromGrayscale(inputImage, 8);
-        Compression.compress(blocks, 8, 14);
-        System.out.println();
-
-
-        /*
+    private static void executionTimeTest(){
+        //execution time experiments
         String[] fileNames = {"200", "400", "800", "1600"};
         double[][] inputMatrix;
 
@@ -42,18 +28,19 @@ public class Main {
             inputMatrix = Utils.loadMatrixFromFile("src/main/resources/Square arrays/int" + fileNames[i] + "x" + fileNames[i] + ".csv");
             ExecutionTimeExperiments.experiments(inputMatrix);
         }
-         */
+    }
 
+    private static void DCTReliabilityTest(){
+        //homemade DCT reliability test
         double[] inputData = {231, 32, 233, 161, 24, 71, 140, 245};
-        double[] transformedData = new double[inputData.length];
+        double[] transformedDataDCT = new double[inputData.length];
+        transformedDataDCT = DCT.applyDCT(inputData);
+        Utils.printArray(transformedDataDCT);
+    }
 
-        transformedData = DCT.applyDCT(inputData);
-        Driver.printArray(transformedData);
-        //System.out.println();
-        //System.out.println("Trans data");
-
-//DCT2 Homemade
-/*        String rawData = (String) ("231 32 233 161 24 71 140 245\n" +
+    private static void DCT2ReliabilityTest(){
+        //homemade DCT2 reliability test
+        String rawData = (String) ("231 32 233 161 24 71 140 245\n" +
                 "247 40 248 245 124 204 36 107\n" +
                 "234 202 245 167 9 217 239 173\n" +
                 "193 190 100 167 43 180 8 70\n" +
@@ -70,19 +57,8 @@ public class Main {
             for (int ii = 0; ii < 8; ii++)
                 inputData2[i][ii] = Double.parseDouble(currentRow[ii]);
         }
-
-
-        double[][] transformedData = inputData2.clone();
-        //DoubleDCT_2D transformer = new DoubleDCT_2D(inputData2.length, inputData2[0].length);
-        //transformer.forward(transformedData, true);
-
-        transformedData = DCT.applyDCT2(inputData2);
-        Driver.print2DArray(transformedData, 8, 8);
-*/
-        //System.out.println();
-
-
-
-
+        double[][] transformedDataDCT2 = inputData2.clone();
+        transformedDataDCT2 = DCT.applyDCT2(inputData2);
+        Utils.print2DArray(transformedDataDCT2, 8, 8);
     }
 }

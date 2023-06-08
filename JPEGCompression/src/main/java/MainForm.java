@@ -10,11 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainForm extends JFrame{
-
-    private static int PANEL1_HEIGHT;
-    private static int PANEL1_WIDTH;
-    private static int PANEL2_HEIGHT;
-    private static int PANEL2_WIDTH;
     private double F;
     private double d;
     private double dMax;
@@ -34,7 +29,6 @@ public class MainForm extends JFrame{
     private JPanel pnlIMAGE2;
     private JButton btnPULISCI;
     private JButton btnAPRI;
-    private JLabel labIMAGE;
 
     public MainForm(){
 
@@ -49,14 +43,10 @@ public class MainForm extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(controlloCampi()){
-                    PANEL2_HEIGHT = pnlIMAGE2.getHeight();
-                    PANEL2_WIDTH = pnlIMAGE2.getWidth();
                     elaborazioneImmagine();
                 }
             }
         });
-
-        init(this);
         btnPULISCI.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -78,6 +68,8 @@ public class MainForm extends JFrame{
                 }
             }
         });
+
+        init(this);
     }
 
     private void elaborazioneImmagine() {
@@ -120,15 +112,6 @@ public class MainForm extends JFrame{
         }
 
         impostaImmagine(pnlIMAGE2, image);
-
-        /*//File outputfile = new File("output.jpg");
-        //ImageIO.write(image, "jpg", outputfile);
-
-            File output = new File("GrayScale.jpg");
-            pnlIMAGE2.getGraphics().drawImage(image, 0, 0, null);
-
-            //ImageIO.write(image, "jpg", output);*/
-
 
     }
 
@@ -189,10 +172,6 @@ public class MainForm extends JFrame{
         panelHeight = panel.getHeight();
 
         panel.getGraphics().clearRect(0, 0, panelWidth, panelHeight);
-
-        /*//JPANEL dimension set
-        PANEL1_HEIGHT = pnlIMAGE1.getHeight();
-        PANEL1_WIDTH = pnlIMAGE1.getWidth();*/
 
         if(imageOptional != null){
             image = imageOptional;

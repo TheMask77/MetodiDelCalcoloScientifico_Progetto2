@@ -45,7 +45,7 @@ public class Compression {
                 }
         }
 
-        System.out.print("DCT Finished");
+        System.out.print("DCT2 Finished");
         return finalBlocks;
 
     }
