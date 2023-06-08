@@ -7,17 +7,14 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainForm extends JFrame{
-
-    private static int PANEL1_HEIGHT;
-    private static int PANEL1_WIDTH;
-    private static int PANEL2_HEIGHT;
-    private static int PANEL2_WIDTH;
     private double F;
     private double d;
     private double dMax;
     private String imagePath;
+    private String newImagePath;
     private String latestPath;
     private JButton btnFILE;
     private JPanel pnlMAIN;
@@ -31,30 +28,25 @@ public class MainForm extends JFrame{
     private JPanel pnlIMAGE1;
     private JPanel pnlIMAGE2;
     private JButton btnPULISCI;
-    private JLabel labIMAGE;
+    private JButton btnAPRI;
 
     public MainForm(){
 
         btnFILE.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ApriFile();
-                ImpostaImmagine();
+                apriFile();
+                impostaImmagine(pnlIMAGE1, null);
             }
         });
         btnSTART.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(ControlloCampi()){
-                    PANEL2_HEIGHT = pnlIMAGE2.getHeight();
-                    PANEL2_WIDTH = pnlIMAGE2.getWidth();
-                    //TODO: se il controllo campi va a buon fine
-                    //TODO: richiamo l'algoritmo e eseguo la dct
+                if(controlloCampi()){
+                    elaborazioneImmagine();
                 }
             }
         });
-
-        Init(this);
         btnPULISCI.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,9 +57,65 @@ public class MainForm extends JFrame{
                 txtPARAF.setText("");
             }
         });
+        btnAPRI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    Desktop.getDesktop().open(new File(newImagePath));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        init(this);
     }
 
-    private void Init(MainForm mainForm){
+    private void elaborazioneImmagine() {
+
+        int F = Integer.parseInt(txtPARAF.getText());
+        int d = Integer.parseInt(txtPARAD.getText());
+
+        double[][] imageArray = Utils.getGrayLevelsMatrixFromFile(imagePath);
+        ArrayList<double[][]> imageArraylist = Utils.getBlocksFromGrayscale(imageArray, F);
+        ArrayList<double[][]> compressedBlocks = Compression.compress(imageArraylist, F, d);
+
+        //dimensions adjustment
+        int adjustedImageWidth = Utils.getImageWidth();
+        int adjustedImageHeight = Utils.getImageHeight();
+        adjustedImageWidth = adjustedImageWidth - (adjustedImageWidth % F);
+        adjustedImageHeight = adjustedImageHeight - (adjustedImageHeight % F);
+
+        double[][] adjustedImageMatrix = new double[adjustedImageWidth][adjustedImageHeight];
+        Utils.getImageMatrixFromBlocks(adjustedImageMatrix, F, compressedBlocks, adjustedImageWidth, adjustedImageHeight);
+        System.out.println();
+        BufferedImage image = new BufferedImage(adjustedImageWidth, adjustedImageHeight, BufferedImage.TYPE_INT_RGB);
+        for(int i = 0; i < adjustedImageWidth; i++) {
+            for(int j = 0; j < adjustedImageHeight; j++) {
+                int grayLevelInt = (int) adjustedImageMatrix[i][j];
+                Color grayLevel = new Color(grayLevelInt, grayLevelInt, grayLevelInt);
+                image.setRGB(i, j, grayLevel.getRGB());
+            }
+        }
+
+        newImagePath = "src/main/resources/ElaboratedImages/";
+        newImagePath += imagePath.split("\\\\")[imagePath.split("\\\\").length - 1].split("\\.")[0] + ".jpeg";
+        File outputfile = new File(newImagePath);
+        try {
+            if(!outputfile.exists()) {
+                outputfile.createNewFile();
+            }
+            ImageIO.write(image, "jpeg", outputfile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        impostaImmagine(pnlIMAGE2, image);
+
+    }
+
+    private void init(MainForm mainForm){
 
         //Variable init
         latestPath = "";
@@ -86,7 +134,7 @@ public class MainForm extends JFrame{
         mainForm.setVisible(true);
     }
 
-    private void ApriFile() {
+    private void apriFile() {
         JFileChooser chooser;
         if (latestPath.isEmpty()){
             chooser = new JFileChooser(System.getProperty("user.home") + "\\desktop");
@@ -108,60 +156,62 @@ public class MainForm extends JFrame{
         }
     }
 
-    private void ImpostaImmagine(){
+    private void impostaImmagine(JPanel panel, BufferedImage imageOptional){
         BufferedImage image;
         File imageFile;
         Image scaledImage;
-        int width;
-        int height;
+        int imageWidth;
+        int imageHeight;
+        int panelWidth;
+        int panelHeight;
         int x;
         int y;
         double scaleFactor;
 
+        panelWidth = panel.getWidth();
+        panelHeight = panel.getHeight();
 
+        panel.getGraphics().clearRect(0, 0, panelWidth, panelHeight);
 
-        pnlIMAGE1.getGraphics().clearRect(0, 0, pnlIMAGE1.getWidth(), pnlIMAGE1.getHeight());
-
-        //JPANEL dimension set
-        PANEL1_HEIGHT = pnlIMAGE1.getHeight();
-        PANEL1_WIDTH = pnlIMAGE1.getWidth();
-
-        try {
-            int pnlWidth = pnlIMAGE1.getWidth();
-            int pnlHeight = pnlIMAGE1.getHeight();
-            imageFile = new File(imagePath);
-            image = ImageIO.read(imageFile);
-            width = image.getWidth();
-            height = image.getHeight();
-
-            if(width > 500 || height > 500) {
-                if(width > height){
-                    scaleFactor = (double) height/width;
-                    width = PANEL1_WIDTH;
-                    height = (int) (PANEL1_WIDTH * scaleFactor);
-                    x = 0;
-                    y = (PANEL1_HEIGHT - height)/2;
-                }else{
-                    scaleFactor = (double) width/height;
-                    height = PANEL1_HEIGHT;
-                    width = (int) (PANEL1_HEIGHT * scaleFactor);
-                    x = (PANEL1_WIDTH - width)/2;
-                    y = 0;
-                }
-
-                scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-                pnlIMAGE1.getGraphics().drawImage(scaledImage, x, y, null);
-            }else{
-                x = (PANEL1_WIDTH - width)/2;
-                y = (PANEL1_HEIGHT - height)/2;
-                pnlIMAGE1.getGraphics().drawImage(image, x, y, null);
+        if(imageOptional != null){
+            image = imageOptional;
+        }else{
+            try {
+                imageFile = new File(imagePath);
+                image = ImageIO.read(imageFile);
+            }catch (IOException e){
+                return;
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        }
+
+        imageWidth = image.getWidth();
+        imageHeight = image.getHeight();
+
+        if(imageWidth > panelWidth || imageHeight > panelHeight) {
+            if(imageWidth > imageHeight){
+                scaleFactor = (double) imageHeight/imageWidth;
+                imageWidth = panelWidth;
+                imageHeight = (int) (panelHeight * scaleFactor);
+                x = 0;
+                y = (panelHeight - imageHeight)/2;
+            }else{
+                scaleFactor = (double) imageWidth/imageHeight;
+                imageHeight = panelHeight;
+                imageWidth = (int) (panelHeight * scaleFactor);
+                x = (panelWidth - imageWidth)/2;
+                y = 0;
+            }
+
+            scaledImage = image.getScaledInstance(imageWidth, imageHeight, Image.SCALE_REPLICATE);
+            panel.getGraphics().drawImage(scaledImage, x, y, null);
+        }else{
+            x = (panelWidth - imageWidth)/2;
+            y = (panelHeight - imageHeight)/2;
+            panel.getGraphics().drawImage(image, x, y, null);
         }
     }
 
-    private boolean ControlloCampi(){
+    private boolean controlloCampi(){
 
         if(!txtFILE.getText().trim().isEmpty()){
             File file = new File(txtFILE.getText());
